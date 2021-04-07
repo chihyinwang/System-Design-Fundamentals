@@ -61,3 +61,26 @@ DNS query → HTTP request
 
 - How much data can it transfer from one system to another in a given time
 - Gigabytes per seconds, Request per seconds .etc
+
+## Availability
+
+- high availability comes with trade offs. Something like cost higher latency or lower throughput
+- Decide what part of system should be high available
+
+### **Nines**
+
+- 99%（two nines）
+- 99.999%（five nines = HA = high availability）
+
+### **SLA/SLO**
+
+- S**ervice-Level Agreement / Service-Level Objectives**
+- SLA means we guarantee you this amount of availability
+- SLA = bunch of SLOs
+
+### **Redundancy**
+
+- duplicating/multiplying certain parts of the system to eliminate single points of failure
+- passive redundancy（如果有一個掛了，沒關係，還有很多個）
+- active redundancy（總共有五個，有一個掛了，其他的會知道並接手）
+**single points of failure = 掛了整個系統都會掛**
