@@ -40,3 +40,24 @@ DNS query → HTTP request
 ### Persistance
 
 - Usually refers to disk, but in general it is any form of storage that persists even it dies.
+
+## Latency And Throughput
+
+- Some system really cares about latency（ex. video games）
+- Accuracy vs Latency?
+- They’re not necessary correlated. Don’t make assumptions based on one another.
+
+### Latency
+
+- The time it takes for a certain operation to complete in a system
+- Reading 1MB from RAM: 250 microseconds
+- Reading 1MB from SSD: 1,000 microseconds
+- Transfer 1MB over Network: 10,000 microseconds
+- Reading 1MB from HDD: 20,000 microseconds
+- Inter-Continental Round Trip: 150,000 microseconds
+(a packet from CA -> Netherlands -> CA)
+
+### Throughput
+
+- How much data can it transfer from one system to another in a given time
+- Gigabytes per seconds, Request per seconds .etc
