@@ -84,3 +84,40 @@ DNS query → HTTP request
 - passive redundancy（如果有一個掛了，沒關係，還有很多個）
 - active redundancy（總共有五個，有一個掛了，其他的會知道並接手）
 **single points of failure = 掛了整個系統都會掛**
+
+## **Caching**
+
+- Used to reduce or improve latency of a system
+- Can occur in different level of system
+- Remind staleness（有些重要有些不重要，像是留言重要、觀看數不重要）
+- Consider using caching to store immutable/static data
+- Consider using caching when single reading/writing data
+- 注意資料的一致性
+
+**Scenario**
+
+1. Client Level - Cache to not to do network request
+2. Server Level - Cache to avoid doing same heavy operation
+3. Database Level - Cache to avoid doing lots of same operation 
+（loading some celebrity’s profile）
+
+狀況****
+
+- **client -> server -> database**
+- **server has cache**
+- **Write through cache**
+    - server cache changed & database also changed
+- **Write back cache**
+    - only update server cache
+    - update to database every random seconds .etc
+- **Cache Eviction Policy**
+    - Least Recently Used = LRU policy
+    - Least Frequently Used Policy
+    - FIFO
+    - or maybe just randomly…
+- **Content Delivery Network**
+    - A CDN is a third-party service that act like a cache for your servers.
+    - Maybe sometime your server only located in one region.
+    - CDN has servers all around the world, so it’s much faster to reach
+    - also often referred to as PoPs (Points of Presence)
+    - Popular CDNs are CloudFlare and Google Cloud CDN
