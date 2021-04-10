@@ -121,3 +121,19 @@ DNS query → HTTP request
     - CDN has servers all around the world, so it’s much faster to reach
     - also often referred to as PoPs (Points of Presence)
     - Popular CDNs are CloudFlare and Google Cloud CDN
+
+## **Proxies**
+
+- between servers and clients
+- client -> proxy -> server -> proxy -> client
+
+### **Forward Proxy**
+
+- Masks client IP（server sees proxy’s IP）
+- basically how VPN works
+
+### **Reverse Proxy**
+
+- Masks server IP
+- client think it’s talking to the actual server but it isn’t. Instead it gets reverse proxy’s IP.
+- filter requests, cache, load balancer .etc
