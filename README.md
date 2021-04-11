@@ -137,3 +137,16 @@ DNS query → HTTP request
 - Masks server IP
 - client think it’s talking to the actual server but it isn’t. Instead it gets reverse proxy’s IP.
 - filter requests, cache, load balancer .etc
+
+## **Load Balancers**
+
+- A type of reverse proxy that distributes traffic across servers.
+
+### **Server-Selection Strategy**
+
+- Round Robin 用同一種順序輪流跑一遍
+- Weighted Round Robin: 一樣輪流，但比較強的server跑比較多次
+- Based on performance / load: Load Balancer有某種健康檢查機制，根據狀況分配
+- IP Based: Hash client IP address to different server (好處是都會到同一個server，可以做cache .etc)
+- Path Based: 不同url path分配到不同server (如果server要有大變動，只會影響到某些功能)
+- 滿常會有同一個系統，用很多不同種類的Load Balancer
