@@ -150,3 +150,14 @@ DNS query → HTTP request
 - IP Based: Hash client IP address to different server (好處是都會到同一個server，可以做cache .etc)
 - Path Based: 不同url path分配到不同server (如果server要有大變動，只會影響到某些功能)
 - 滿常會有同一個系統，用很多不同種類的Load Balancer
+
+## **Hashing**
+
+### Consistent Hashing
+
+- 新增或移除的時候，幾乎可以保證所有的Client依然指到相同的server
+
+### Rendezvous Hashing
+
+- 將client跟server套到某個加權後的算式計算出一個分數 => 得到最適合的server
+- 由於有加權過，所以新增/刪除後，大部分的client依然能配對到原本的server
