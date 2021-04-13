@@ -161,3 +161,31 @@ DNS query → HTTP request
 
 - 將client跟server套到某個加權後的算式計算出一個分數 => 得到最適合的server
 - 由於有加權過，所以新增/刪除後，大部分的client依然能配對到原本的server
+
+## **Relational Database**
+
+- A very structured database in which data is stored following a tabular format.
+- Often supports powerful querying in SQL
+- =SQL Database
+- 必定遵從ACID
+
+### **Non-Relational Database**
+
+- = Non-SQL Database
+
+### **SQL**
+
+- Structured Query Language
+- Load data without loading in memory
+
+### **ACID**
+
+- Atomicity 一個操作裡面有多個小操作時，此操作要成功代表所有小操作都成功
+- Consistancy 任何一項操作都不會讓database進入一個不合理的狀態，你的改變我看得見
+- Isolation 可能會同時有多個操作觸發，但最後還是一個一個做
+- Durability 資料會存在disk裡，不會隨便就不見
+
+### Database Index
+
+- 用來加速搜尋的額外data
+- 不過downside是就需要額外的空間來儲存，在存資料時也變得更久
