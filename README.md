@@ -189,3 +189,22 @@ DNS query → HTTP request
 
 - 用來加速搜尋的額外data
 - 不過downside是就需要額外的空間來儲存，在存資料時也變得更久
+
+## Key-Value Stores
+
+- 非常有彈性且單純
+- 一種 NoSQL Database，常常用在 caching 跟 dynamic configuration
+- 知名的有：DynamoDB, Etcd, Redis, and ZooKeeper
+- 有分存到 disk 跟 in-memory
+
+### Etcd
+
+Etcd is a strongly consistent and highly available key-value store that's often used to implement leader election in a system.
+
+### Redis
+
+An in-memory key-value store. Does offer some persistent storage options but is typically used as a really fast, best-effort caching solution. Redis is also often used to implement rate limiting.
+
+### ZooKeeper
+
+ZooKeeper is a strongly consistent, highly available key-value store. It's often used to store important configuration or to perform leader election.
