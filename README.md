@@ -208,3 +208,45 @@ An in-memory key-value store. Does offer some persistent storage options but is 
 ### ZooKeeper
 
 ZooKeeper is a strongly consistent, highly available key-value store. It's often used to store important configuration or to perform leader election.
+
+## Specialized Storage Paradigms
+
+### Blob Storage
+
+Optimized for storing and retrieving massive amounts of unstructured data
+
+- Blob Store 就是要來解決儲存 blob 的問題，因為一般不會把 blob 存在 SQL Database 裡面
+- 在查詢時，與 key-value 很類似，不過不要混淆了，他們是為不同的目的而存在。比如 key-value 無法存取如此大量的資料，且比較著重在優化 latency，而不是 availability and durabilty
+- 知名的有：S3 (Amazon), GCS (Google), Azure (Microsoft)
+
+Blob = 任意無結構的data，比如 video file, image file, text file, large binary compiled code, ...，通常資料量、數量都很大
+
+### Time Series DB
+
+A database that is specialized for storing time series data
+
+- 會用在 monitoring，比如說要監控所有發生的事件、IoT 互聯的資料、股價...
+- 知名的有：InfluxDB, Prometheus
+
+### Graph DB
+
+主要著重在不同 data set 之間的「關係」
+
+- 有些資料很自然的可以使用 Graph，比如說 social networks, posts
+- 這些資料若放在 SQL 裡面，指令會相對複雜，但在 Graph 裡面就不會有這個問題，而且很快
+- 查資料就很像在 traversing nodes
+- Cypher: 一種 graph query language，原為 Neo4j 開發出來的，漸漸被其他人所使用
+- 知名的有：Neo4j
+
+### Spatial DB
+
+儲存與空間有關的資料，像是地理位置、餐廳在地圖上的位置...
+
+- 與一般的 index 不同，他使用 spatial index。很多這些 spacial indices 是 tree-based，像是 R-trees, K-D trees, M-trees...，Quad-tree 也是其中一種。
+- 有時候為了避免一直呼叫 API，我們會自己用一個 Quad-tree 去做 caching
+
+Quadtree = 一種有四個 node 的樹，要馬四個要馬沒有。
+
+他會將地圖不斷切成四等份（左上、左下、右上、右下），可以設條件他會切到什麼程度為止，比如說切到格子內只有五個 location 以內。
+
+查詢時只需要 log4 n ，非常快就可以找到想要的 location
