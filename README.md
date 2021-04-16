@@ -250,3 +250,50 @@ Quadtree = 一種有四個 node 的樹，要馬四個要馬沒有。
 他會將地圖不斷切成四等份（左上、左下、右上、右下），可以設條件他會切到什麼程度為止，比如說切到格子內只有五個 location 以內。
 
 查詢時只需要 log4 n ，非常快就可以找到想要的 location
+
+## Replication And Sharding
+
+- 示意圖
+
+### Replication
+
+💡 **由多個 database 來備份資料提高 Redundancy 並降低 Latency**
+
+✳️  為什麼需要？
+
+- 如果只有一個 database，如果掛了資料都會不見
+- 此時若有另一個備份的 database，就可以解決這個問題
+
+✳️  LinkedIn post example
+
+- 兩個 database，一個在美國、一個在印度，這樣就可以有低的 latency
+- 同步（Sync）是指兩邊的資料庫要馬上同步，這個過程通常會比較久，因為兩邊都要寫入，且都要順利完成。基本上你不會想讓你兩邊的資料不同步
+- 而非同步（Async）的狀況，會用在不需要及時同步的資料上。比如說發的 post 要出現別人的塗鴉牆上，這種比較沒有緊急性的需求，就可以用 Replication 的 Async 方式來同步（假設在美國發文，且兩個資料庫每五分鐘同步一次，在美國的會馬上看到發文，在印度的會在同步後才看到）
+
+### **Shards**
+
+💡 **切分 data（data partitioning）讓 database 不會過多備份相同資料，並增加更多 throughput**
+
+✳️  為什麼需要？
+
+- 如果今天 request 太多，一個 database 應付不來（throughput不足），這時很自然的會想 scale horizontally，增加更多 database
+- 但此時會碰到另一個問題，我們真的想要有一堆一模一樣的 data 嗎？
+- 所以我們可以把這些 data 切分，由不同 database 存不同的 data，把一個大 main database 變成更多小 database，這就是 sharding
+- 如此可以增加 throughput，也可以避免重複備份過多的 data
+- 若要深究，這是一個非常複雜的問題
+
+✳️  怎麼切
+
+- 比如說是 relational database，可以切 tables。比如說帳單資料，名字開頭 A-E 的存一個、F-J 的存一個...
+- 怎麼切，就是你的 sharding strategy 是什麼
+- 以上面帳單資料為例，XYZ 開頭的 data 可能就會比較少被拜訪，其他的會被多次拜訪（Hot Spot），所以這個 strategy 不夠好。這樣其實就失去了當初用 shard 的意義（每次都拜訪同一個，那跟只有一個有什麼差）
+- 我們可以用 hashing 去做
+
+Hot Spot：當工作分配不均時，代表有某些 server 會被拜訪比較多次，稱為 Hot Spot。
+（可能是因為 sharding key 或 hashing function 不理想 或 工作本來就 skewed）
+
+✳️  實例
+
+- Client → Server → Reverse Proxy → Shards
+- 通常會讓 Reverse Proxy 去處理要找哪個 Shard
+- 切不同地區、切不同種類的 data、切不同的 column（only for structured data）
