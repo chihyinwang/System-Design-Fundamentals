@@ -297,3 +297,32 @@ Hot Spot：當工作分配不均時，代表有某些 server 會被拜訪比較�
 - Client → Server → Reverse Proxy → Shards
 - 通常會讓 Reverse Proxy 去處理要找哪個 Shard
 - 切不同地區、切不同種類的 data、切不同的 column（only for structured data）
+
+## Leader Election
+
+💡 **如何讓多台機器擁有共同的認知（share their states）**
+
+✳️  實例解說 
+
+- Third-Party Service ← Server ⇆ Database
+- Netflix 會員每個月續約的扣款程序，Database 要 Third-Party 去做扣款動作
+- 問題：不希望兩個直接溝通（Database 有風險）
+    - 在兩者之間放一個 Server
+- 衍伸出一個問題：如果那個 Server 掛了怎麼辦？
+    - 增加更多 Server
+- 衍伸出另一個問題：扣款絕對不能被重複做，那該如何管理這麼多 Server？
+    - 讓這幾個 Server 自行選出一個 Leader，由它去做扣款。若 Leader 掛了，剩下的會再次選出一個 Leader，由它去做扣款。
+- 問題：這為什麼很難做到？
+    - 要讓機器彼此間有共識是很難的
+    - 如果是網路壞掉呢？
+- Consensus algorithms
+    - Paxos
+    - Raft
+    - ...
+- 有一些 Tools 可以幫助我們 implement 自己的 Leader Election
+    - ZooKeeper (Uber)
+    - Etcd
+        - Key-Value stores
+        - Highly available & strongly consistent (不多 database 可以同時擁有這兩個特質)
+        - Implement The Raft consensus algorithm (這就是為什麼他們可以同時擁有兩個特質)
+        - 我們自己用 Etcd 實作，就會讓 Servers 和 Etcd 溝通，從那邊得到 Leader，如此就是實作 Leader Election 了
