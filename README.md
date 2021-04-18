@@ -326,3 +326,25 @@ Hot Spot：當工作分配不均時，代表有某些 server 會被拜訪比較�
         - Highly available & strongly consistent (不多 database 可以同時擁有這兩個特質)
         - Implement The Raft consensus algorithm (這就是為什麼他們可以同時擁有兩個特質)
         - 我們自己用 Etcd 實作，就會讓 Servers 和 Etcd 溝通，從那邊得到 Leader，如此就是實作 Leader Election 了
+
+## Peer-To-Peer Networks
+
+問題：如何一次傳送龐大的資料給很多機器？
+
+✳️  思路：
+
+1. 一個一個輪流傳。但是這樣要傳很久，太慢
+2. 增加 Server 來傳。但這樣會有很多相同的資料在這些機器上
+3. 將資料切成很多小份，傳給不同接收者，讓接收者們彼此溝通，最後拼湊出完整的資料 ✅
+- 圖示
+
+✳️  如何讓 peer 知道下一個要找溝通？
+
+1. Tracker
+    - 有一個管理 Server，告訴每個 peer 要找誰
+2. Gossip protocol / Epidemic protocol
+    - 每個 peer 會有一些 “其他 peer 有什麼資料” 的資訊
+    - 其實就跟平常在傳八卦、或是像病毒在傳遞一樣
+    - peerA 跟 peerB 溝通，彼此交流他們有的資訊，就會知道下一個要找誰
+    - Distributed Hash Table (DHT)： 一堆 hash table 在 mapping
+    - Kraken：一個由 Uber 開發出的 p2p 系統
