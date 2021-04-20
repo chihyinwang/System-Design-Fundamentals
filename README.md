@@ -366,3 +366,18 @@ Hot Spot：當工作分配不均時，代表有某些 server 會被拜訪比較�
 - Server 從被動的角色，變成主動向 Client 傳送資料（pushing）
 
 根據狀況來判斷要用 Polling 還是 Streaming。若是不用即時更新可用 polling，若是需要即時更新可用 Streaming。
+
+## Configuration
+
+### Static Configuration
+
+- 與程式碼綁定，所以若要改動需要更版（shipped with code）
+- 好處：在發布前會有嚴謹的 code review process、tests 去驗證跟檢查
+- 壞處：發佈時間久、不彈性
+
+### Dynamic Configuration
+
+- 不與程式碼綁定，通常會需要一個 Database，Application 跟這個 Database 詢問 Configuration
+- 比較複雜，最好要有 review process、access control 來保證更動時不會有錯（review process 比 deploy 時間還長）
+- 好處：使用起來很彈性、很快，比如說可以用在 UI、一些設定...
+- 壞處：沒有流程會檢查這個，也沒有測試會跑
