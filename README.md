@@ -396,3 +396,24 @@ Hot Spot：當工作分配不均時，代表有某些 server 會被拜訪比較�
 - 通常不會直接在處理 request 的 Server 上做 Rate Limiting，會在另一個 Server 或 Load balancer 或 Database 去處理
 - Redis（Key-Value store Database），比如說在收到 request 時先去 Redis 檢查
 - Tier Based：可以同時有很多條件（0.5 秒一次＋10 秒內三次＋1 分鐘內十次）
+
+## Logging And Monitoring
+
+問題：如何處理一些初次碰到、難以複製的問題？
+
+### Logging
+
+💡  把 logs（有用的資訊）存到 Database 裡面提供給開發者 debug
+
+- Stackdriver（Google）
+
+### Monitoring
+
+💡  視覺化呈現系統的各種指標
+
+1. 利用 logs 畫出圖形
+    - 被 logs 限制，這些 logs 一定要有我想呈現的圖形資料
+    - 如果有天要改變 logs，可能會造成 metrics system 出錯
+2. Time-Series Database
+    - Grafana
+    - Pair with a Alerting System 會很不錯（出錯時會警告你）
