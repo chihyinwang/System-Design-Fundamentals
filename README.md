@@ -417,3 +417,28 @@ Hot Spot：當工作分配不均時，代表有某些 server 會被拜訪比較�
 2. Time-Series Database
     - Grafana
     - Pair with a Alerting System 會很不錯（出錯時會警告你）
+
+## Publish / Subscribe Pattern
+
+ 問題：如何 scale Streaming（像是股票資訊）
+ 
+ ### Publisher
+
+- 發送訊息到 Topics
+
+### Topics
+
+- 像是一個 Channel，一個中繼站
+- 讓 Subscriber 去 Subscribe，監聽是否有新資訊
+- 其實就是一個 Database，儲存 Publisher 傳的資料，再把這些資料傳給監聽自己的 Subscriber
+- 不同的 Topics 通常也會儲存不同的資料（Separate of Concerns）
+- 傳送給 Subscriber 至少會傳送一次（可能會傳很多次，傳送失敗之類的）
+- 傳送的這些資料必需是 Idempotent，意思是不論重複做多少次，結果都是一樣的（例如：更改某個狀態，而不是 counter++）
+- FIFO
+- 有的可以 Replay / Rewind 那些進入 Topics 的資料
+
+### Subscriber
+
+- Subscribe Topics，持續監聽
+- 收到資料後會傳 ACK (Acknowledgement) 給 Topics，讓 Topics 知道傳送成功，自己被 listen
+- 可根據不同需求去增加 filter
