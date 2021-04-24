@@ -442,3 +442,45 @@ Hot Spot：當工作分配不均時，代表有某些 server 會被拜訪比較�
 - Subscribe Topics，持續監聽
 - 收到資料後會傳 ACK (Acknowledgement) 給 Topics，讓 Topics 知道傳送成功，自己被 listen
 - 可根據不同需求去增加 filter
+
+## 📌 MapReduce
+
+問題：如何有效對 Distributed File System 的 Datasets 進行操作、處理、輸出？
+
+✳️  注意
+
+1. 當我們討論 MapReduce，我們就是假設在討論 Distributed File System，它有一個中央管理的地方，知道 MapReduce 的過程與狀況。
+2. 我們是把 map function 傳到 dataset
+3. key-value pairs structure 是很重要的，如此才能去做 reorganized
+4. handle faults / handle failures（比如 network partition, machine failures, ...）
+    - 如果有哪個環節失敗了，central control plane 會要求再做一次
+
+### 🔷 Steps
+
+1. Map
+    - 把 dataset 變成 key-value pairs
+    - 為了避免移動龐大的 datasets，我們一般是把 map function 傳到 dataset 的機器去跑
+2. Shuffle
+    - 重新整理這些 key-value pairs 到不同的機器（keyA, keyB → mac1, keyC → mac2）
+3. Reduce
+    - 把 key-value pairs 轉（歸類）成自己想要的輸出
+- 示意圖
+
+    ![System%20Design%20Fundamentals%2061ac6ecd6c374463a13f5beb3e87bec9/MapReduce.jpeg](System%20Design%20Fundamentals%2061ac6ecd6c374463a13f5beb3e87bec9/MapReduce.jpeg)
+
+✳️  成果
+
+- 將流程簡化，工程師只需要考慮 input & output（map & reduce function）
+
+    （不需要考慮 fault-tolerance, parallelization of tasks, ...，這些已經被 MapReduce implementation 做完了）
+
+✳️  範例
+
+- 從 Youtube 資料中找到每個 user 的觀看數或按讚數
+- 從整個系統的 logs 中尋找一段時間內每個 service 的 log 數
+
+### 🔷 Distributed File System
+
+- Extremely large-scale persistent storage
+- 大量的資料被切分成許多塊，存在不同機器裡（Large data set being split up into chunks）
+- Central control plane 負責決定 data chunks 要分配到哪裡、怎麼讀資料、如何溝通 ...
