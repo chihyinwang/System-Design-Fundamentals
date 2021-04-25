@@ -484,3 +484,55 @@ Hot Spot：當工作分配不均時，代表有某些 server 會被拜訪比較�
 - Extremely large-scale persistent storage
 - 大量的資料被切分成許多塊，存在不同機器裡（Large data set being split up into chunks）
 - Central control plane 負責決定 data chunks 要分配到哪裡、怎麼讀資料、如何溝通 ...
+
+## 📌 Security And HTTPS
+
+### 🔷 Man-In-The-Middle Attack
+
+- 指第三方在溝通雙方之間去竊聽、更改、變換機密資料
+- HTTPS 就是要處理這個問題
+
+### 🔷 Encryption
+
+1. Symmetric Encryption
+    - 1 key
+    - 比 Asymmetric 快
+    - 這個 key 要被雙方共享
+    - 風險：要是這個 key 被別人攔截，那加密就有跟沒有一樣
+2. Asymmetric Encryption
+    - 2 key（public / private key pair）
+    - 兩把金鑰由演算法得出
+    - 經由 public key 加密的密文只有 private key 能解開
+    - A 想傳訊息給 B
+        1. B 產生 public / private key pairs
+        2. 把 public key 給 A
+        3. A 用從 B 得到的 public key 對訊息加密 
+        4. 把加密訊息傳給 B
+        5. B 用 private key 解密
+        6. 得到訊息
+
+### 🔷 TLS
+
+- Transport Layer Security
+- A security protocol
+- HTTPS communication is encrypted using TLS
+- TLS handshake
+    - 在 Client 跟 Server 間建立安全的連線
+    - 流程
+        1. Client 向 Server 發出一個 'Client hello'（random strings）
+        2. Server 向 Client 回應 'Server hello' ＋ SSL certificate（public key，詳細見下）
+        3. Client 向 CA 驗證 SSL certificate，得到 public key
+        4. 用 public key 加密 premaster secret 並傳給 Server
+        5. Server 用 private key 解密得到 premaster secret
+        6. 透過 client hello, server hello, premaster secret，產生 4 session keys（可以把它想成 Symmetric Encryption Key for this session），就可以開始溝通了
+
+### 🔷 SSL
+
+- Secure Sockets Layer
+- TLS 的前身
+- SSL certificate
+    - 內容包含 public key、server entity、...，Signed by CA (Certificate Authority)
+    - CA 會用自己的 private key 來 sign SSL certificate
+    - Client（browser） 可以拿 CA 的 public key 來驗證是否正確
+    - 不直接傳 public key 而要傳 SSL certificate 是因為這樣才能保證不會發生 MITMA
+    - Client 相信這個 SSL certificate 是來自 Server 的憑據是，此憑證是有公信力的第三方（CA）認證過的
