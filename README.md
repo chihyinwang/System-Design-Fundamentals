@@ -536,3 +536,13 @@ Hot Spot：當工作分配不均時，代表有某些 server 會被拜訪比較�
     - Client（browser） 可以拿 CA 的 public key 來驗證是否正確
     - 不直接傳 public key 而要傳 SSL certificate 是因為這樣才能保證不會發生 MITMA
     - Client 相信這個 SSL certificate 是來自 Server 的憑據是，此憑證是有公信力的第三方（CA）認證過的
+
+## 📌 API Design
+
+- Entity Definitions
+- Endpoint Definitions
+    - CRUD...
+    - Pagination
+    - ...
+- Swagger：一種詳細的 API 格式
+- 可以去看大公司的 API documentation，看人家怎麼寫的
