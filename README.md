@@ -1,55 +1,91 @@
-# System-Design-Fundamentals
+# System Design Fundamentals
 
-## Client-Server
+## 📌 Client-Server
 
 DNS query → HTTP request
 
-- **IP address**: A unique identifier for a machine
-- **DNS**: Domain Name System query to get IP address
-- **Server**: Specified which port to listen（ex. http uses port 80, https uses port 443）
+### 🔷 **IP address**
 
-## Network Protocols
+- A unique identifier for a machine
 
-### **IP**
+### 🔷 **DNS**
 
-- packet = fundamental unit of data that is sent from one to another
+- Domain Name System
+- Client 會向 DNS query 得到 IP address
+
+### 🔷 Port
+
+- Server 會指定要用哪個 port (0 ~ 2^16)
+- 有某些 port 是公認的，不該被 user-level 使用
+    - 22：Secure Shell
+    - 53：DNS lookup
+    - 80：HTTP
+    - 443：HTTPS
+
+## 📌 Network Protocols
+
+### 🔷 **IP**
+
+- packet = 最基礎的資料傳輸單位（made up by bytes）
 - packet = header + data
-    1. header usually contains source/destination IP address 
-    2. IP version（IPV4 most uses）（IPV6 more and more now）
-- Can’t guarantee order of packets
+    1. header 包含 source/destination 的 IP address 
+    2. header 包含 IP version（IPV4 most uses）（IPV6 more and more now）
+    3. header 包含 packet 的大小
+- packet 最大是 2^16 bytes
+- 若要傳輸多個 packets，這無法保證 packets 的順序
 
-### **TCP**
+### 🔷 **TCP**
 
-- build on top of IP
-- Can guarantee order of packets（resent .etc）
+- 從 IP 來的
+- 能保證 packets 的順序（resent .etc）
 - packet = header + TCP header + data
-- handshake
+- TCP connection：handshake
 
-### **HTTP**
+### 🔷 **HTTP**
 
-- build on top of TCP
-- following request response paradigm
+- 從 TCP 來的
+- HyperText Transfer Protocol
+- 人看得懂的 protocol
+- 遵從 request / response paradigm
 - method, statusCode .etc
 
-## Storage
+## 📌 Storage
 
 - Database is just a server.
 - store/retrieve
 - Different offerings for different use case.
 
-### Persistance
+### 🔷 Disk
 
-- Usually refers to disk, but in general it is any form of storage that persists even it dies.
+- 如果寫到 disk，即使掛了也還可以取回來
+- 一般是指 HDD (hard-disk drive) 或 SSD (solid-state drive)
+- 也被稱作 non-volatile storage
 
-## Latency And Throughput
+### 🔷 Memory
 
-- Some system really cares about latency（ex. video games）
+- Random Access Memory (RAM)
+- 掛掉的話資料會流失
+
+### 🔷 Database
+
+- 基本上就是用 Disk 或是 Memory 來做到兩件事：Record 跟 Query
+
+### 🔷 Persistance
+
+- 通常是指 Disk，定義上是指掛掉後還能保留資料的任何形式的 storage
+
+## 📌 Latency And Throughput
+
 - Accuracy vs Latency?
-- They’re not necessary correlated. Don’t make assumptions based on one another.
+- Latency & Throughput 未必相關，不要直接假設他們會互相影響
 
-### Latency
+### 🔷 Latency
 
-- The time it takes for a certain operation to complete in a system
+- 系統完成一個 operation 的時間
+- Some system really cares about latency（ex. video games）
+
+✳️  參考數字
+
 - Reading 1MB from RAM: 250 microseconds
 - Reading 1MB from SSD: 1,000 microseconds
 - Transfer 1MB over Network: 10,000 microseconds
@@ -57,161 +93,196 @@ DNS query → HTTP request
 - Inter-Continental Round Trip: 150,000 microseconds
 (a packet from CA -> Netherlands -> CA)
 
-### Throughput
+### 🔷 Throughput
 
-- How much data can it transfer from one system to another in a given time
+- 系統在一定時間內能傳送多少資料到另一個系統
 - Gigabytes per seconds, Request per seconds .etc
 
-## Availability
+## 📌 Availability
 
-- high availability comes with trade offs. Something like cost higher latency or lower throughput
+- High availability comes with trade-offs. Something like cost higher latency or lower throughput
 - Decide what part of system should be high available
 
-### **Nines**
+### 🔷 **Nines**
 
 - 99%（two nines）
 - 99.999%（five nines = HA = high availability）
 
-### **SLA/SLO**
+### 🔷 **SLA/SLO**
 
 - S**ervice-Level Agreement / Service-Level Objectives**
 - SLA means we guarantee you this amount of availability
 - SLA = bunch of SLOs
 
-### **Redundancy**
+### 🔷 **Redundancy**
 
 - duplicating/multiplying certain parts of the system to eliminate single points of failure
 - passive redundancy（如果有一個掛了，沒關係，還有很多個）
 - active redundancy（總共有五個，有一個掛了，其他的會知道並接手）
-**single points of failure = 掛了整個系統都會掛**
+*single points of failure = 掛了整個系統都會掛*
 
-## **Caching**
+## 📌 **Caching**
 
-- Used to reduce or improve latency of a system
+- 通常用來減少系統的 latency
 - Can occur in different level of system
-- Remind staleness（有些重要有些不重要，像是留言重要、觀看數不重要）
+- 小心 staleness
+    - Cache can be stale if not update properly
+    - 此時就要判斷哪些重要哪些不重要，像是留言重要、觀看數不重要...等等
 - Consider using caching to store immutable/static data
 - Consider using caching when single reading/writing data
 - 注意資料的一致性
 
-**Scenario**
+### 🔷 **Scenario to use Caching**
 
-1. Client Level - Cache to not to do network request
-2. Server Level - Cache to avoid doing same heavy operation
-3. Database Level - Cache to avoid doing lots of same operation 
-（loading some celebrity’s profile）
+1. Client Level - 利用 Cache 來減少 network request
+2. Server Level - 利用 Cache 避免重複做一些 heavy operation
+3. Database Level - 利用 Cache 避免重複做一樣的 operation 
+（像是 loading some celebrity’s profile）
 
-狀況****
+✳️  範例
 
-- **client -> server -> database**
-- **server has cache**
-- **Write through cache**
-    - server cache changed & database also changed
-- **Write back cache**
-    - only update server cache
-    - update to database every random seconds .etc
-- **Cache Eviction Policy**
-    - Least Recently Used = LRU policy
-    - Least Frequently Used Policy
-    - FIFO
-    - or maybe just randomly…
+- Client -> Server -> Database
+- Server 有 cache
+- 使用者更改資料，此時 Server cache & Database 的資料不相同（two sources of truth）
+    - **Write through cache**
+        - 同時改變 Server cache 跟 Database
+        - 但這樣就代表我只要一更改，就還是要寫到 Database，cache 存在用意減少
+    - **Write back cache**
+        - 在更改時只更新 Server cache
+        - 隔一段時間由 Server 去更新 Database（every random seconds, .etc）
+        - 缺點是萬一 Server cache 還沒 update 到 database 就遺失，那會很慘
+- 怎麼決定要把哪些 Cache 刪掉？
+    - **Cache Eviction Policy**
+        - Least Recently Used = LRU policy
+        - Least Frequently Used Policy
+        - FIFO
+        - or maybe just randomly…
 - **Content Delivery Network**
     - A CDN is a third-party service that act like a cache for your servers.
-    - Maybe sometime your server only located in one region.
-    - CDN has servers all around the world, so it’s much faster to reach
-    - also often referred to as PoPs (Points of Presence)
-    - Popular CDNs are CloudFlare and Google Cloud CDN
+    - 有時候自己的 Server 在別的地區，但 CDN 的 Server 是全世界都有，所以 Latency 很低
+    - 又被稱作 PoPs (Points of Presence)
+    - 知名 CDN： CloudFlare, Google Cloud CDN
 
-## **Proxies**
+## 📌 **Proxies**
 
-- between servers and clients
-- client -> proxy -> server -> proxy -> client
+- 在 Server 跟 Client 之間，幫忙隱藏身份
+- Client -> Proxy -> Server -> Proxy -> Client
 
-### **Forward Proxy**
+### 🔷 **Forward Proxy**
 
-- Masks client IP（server sees proxy’s IP）
-- basically how VPN works
+- Masks Client IP（Server sees proxy’s IP）（隱藏 Client）
+- 就是 VPN
 
-### **Reverse Proxy**
+### 🔷 **Reverse Proxy**
 
-- Masks server IP
-- client think it’s talking to the actual server but it isn’t. Instead it gets reverse proxy’s IP.
-- filter requests, cache, load balancer .etc
+- Masks Server IP（Client sees proxy’s IP）（隱藏 Server）
+- Client 以為自己在跟 Server 講話，但實際上它拿到的是 reverse proxy 的 IP
+- 能夠 filter requests, cache, load balancer, .etc
 
-## **Load Balancers**
+## 📌 **Load Balancers**
 
-- A type of reverse proxy that distributes traffic across servers.
+- 一種 reverse proxy 來 distributes traffic across servers
 
-### **Server-Selection Strategy**
+### 🔷 **Server-Selection Strategy**
 
 - Round Robin 用同一種順序輪流跑一遍
-- Weighted Round Robin: 一樣輪流，但比較強的server跑比較多次
-- Based on performance / load: Load Balancer有某種健康檢查機制，根據狀況分配
-- IP Based: Hash client IP address to different server (好處是都會到同一個server，可以做cache .etc)
-- Path Based: 不同url path分配到不同server (如果server要有大變動，只會影響到某些功能)
-- 滿常會有同一個系統，用很多不同種類的Load Balancer
+- Weighted Round Robin： 一樣輪流，但比較強的 Server 跑比較多次
+- Based on performance / load: Load Balancer 有某種健康檢查機制，根據狀況分配
+- IP Based: Hash client IP address to different server (好處是都會到同一個 Server，可以做cache .etc)
+- Path Based： 不同 url path 分配到不同 Server (如果 Server 要有大變動，只會影響到某些功能)
+- 滿常會有同一個系統，用很多不同種類的 Load Balancer
 
-## **Hashing**
+## 📌 **Hashing**
 
-### Consistent Hashing
+### 🔷 Consistent Hashing
 
-- 新增或移除的時候，幾乎可以保證所有的Client依然指到相同的server
+- 新增或移除的時候，幾乎可以保證所有的 Client 依然指到相同的 Server
+- 解釋
+    - 假設我們要 hash by 4。
+    - 想像所有值在 hash 之後都會是圓上的一個點。
+    - 我們先 hash 出四個點 ABCD，代表不同 Server
 
-### Rendezvous Hashing
+    ✳️  如何決定 Clients 要找哪個 Server？
 
-- 將client跟server套到某個加權後的算式計算出一個分數 => 得到最適合的server
-- 由於有加權過，所以新增/刪除後，大部分的client依然能配對到原本的server
+    - Clients (C1, C2, ...) hash 後也會是圓上的其中一點
+    - 可以順時針去跑，先撞到誰就分配給哪個 Server
+    - 結果：C1, C4 → A、C2 → C、C3 → B
+        - 示意圖 1
 
-## **Relational Database**
+            ![System%20Design%20Fundamentals%2061ac6ecd6c374463a13f5beb3e87bec9/Hashing1.jpeg](System%20Design%20Fundamentals%2061ac6ecd6c374463a13f5beb3e87bec9/Hashing1.jpeg)
 
-- A very structured database in which data is stored following a tabular format.
+    ✳️  此時增加一個 Server E 會怎麼樣呢？
+
+    - 結果：C1 → E、 C4 → A、C2 → C、C3 → B
+        - 示意圖 2
+
+            ![System%20Design%20Fundamentals%2061ac6ecd6c374463a13f5beb3e87bec9/Hashing2.jpeg](System%20Design%20Fundamentals%2061ac6ecd6c374463a13f5beb3e87bec9/Hashing2.jpeg)
+
+    ✳️  如果 Server A 特別強，我希望它多負擔一點怎麼辦？
+
+    - 增加更多 A 的節點（選到 A 的範圍更大）
+    - 結果：C1 → A、 C4 → A、C2 → C、C3 → A
+        - 示意圖 3
+
+            ![System%20Design%20Fundamentals%2061ac6ecd6c374463a13f5beb3e87bec9/Hashing3.jpeg](System%20Design%20Fundamentals%2061ac6ecd6c374463a13f5beb3e87bec9/Hashing3.jpeg)
+
+### 🔷 Rendezvous Hashing
+
+- 將 Client 跟 Server 套到某個加權後的算式計算出一個分數 => 得到最適合的 Server
+- 由於有加權過，所以新增/刪除後，大部分的client依然能配對到原本的 Server
+
+## 📌 **Relational Database**
+
+### 🔷 **Relational Database**
+
+- A very structured database in which data is stored following a tabular format
 - Often supports powerful querying in SQL
-- =SQL Database
+- = SQL Database
 - 必定遵從ACID
 
-### **Non-Relational Database**
+### 🔷 **Non-Relational Database**
 
 - = Non-SQL Database
 
-### **SQL**
+### 🔷 **SQL**
 
 - Structured Query Language
-- Load data without loading in memory
+- Load data without loading in memory（這就是為什麼我們不用 Python 去抓資料就好）
 
-### **ACID**
+### 🔷 **ACID**
 
 - Atomicity 一個操作裡面有多個小操作時，此操作要成功代表所有小操作都成功
-- Consistancy 任何一項操作都不會讓database進入一個不合理的狀態，你的改變我看得見
+- Consistancy 任何一項操作都不會讓 database 進入一個不合理的狀態，你的改變我看得見
 - Isolation 可能會同時有多個操作觸發，但最後還是一個一個做
-- Durability 資料會存在disk裡，不會隨便就不見
+- Durability 資料會存在 disk 裡，不會隨便就不見
 
-### Database Index
+### 🔷 Database Index
 
-- 用來加速搜尋的額外data
-- 不過downside是就需要額外的空間來儲存，在存資料時也變得更久
+- 用來加速搜尋的額外 data
+- 不過 downside 是就需要額外的空間來儲存，在存資料時也變得更久
 
-## Key-Value Stores
+## 📌 Key-Value Stores
 
 - 非常有彈性且單純
 - 一種 NoSQL Database，常常用在 caching 跟 dynamic configuration
 - 知名的有：DynamoDB, Etcd, Redis, and ZooKeeper
 - 有分存到 disk 跟 in-memory
 
-### Etcd
+### 🔷 Etcd
 
 Etcd is a strongly consistent and highly available key-value store that's often used to implement leader election in a system.
 
-### Redis
+### 🔷 Redis
 
 An in-memory key-value store. Does offer some persistent storage options but is typically used as a really fast, best-effort caching solution. Redis is also often used to implement rate limiting.
 
-### ZooKeeper
+### 🔷 ZooKeeper
 
 ZooKeeper is a strongly consistent, highly available key-value store. It's often used to store important configuration or to perform leader election.
 
-## Specialized Storage Paradigms
+## 📌 Specialized Storage Paradigms
 
-### Blob Storage
+### 🔷 Blob Storage
 
 Optimized for storing and retrieving massive amounts of unstructured data
 
@@ -221,14 +292,14 @@ Optimized for storing and retrieving massive amounts of unstructured data
 
 Blob = 任意無結構的data，比如 video file, image file, text file, large binary compiled code, ...，通常資料量、數量都很大
 
-### Time Series DB
+### 🔷 Time Series DB
 
 A database that is specialized for storing time series data
 
 - 會用在 monitoring，比如說要監控所有發生的事件、IoT 互聯的資料、股價...
 - 知名的有：InfluxDB, Prometheus
 
-### Graph DB
+### 🔷 Graph DB
 
 主要著重在不同 data set 之間的「關係」
 
@@ -238,7 +309,7 @@ A database that is specialized for storing time series data
 - Cypher: 一種 graph query language，原為 Neo4j 開發出來的，漸漸被其他人所使用
 - 知名的有：Neo4j
 
-### Spatial DB
+### 🔷 Spatial DB
 
 儲存與空間有關的資料，像是地理位置、餐廳在地圖上的位置...
 
@@ -251,13 +322,19 @@ Quadtree = 一種有四個 node 的樹，要馬四個要馬沒有。
 
 查詢時只需要 log4 n ，非常快就可以找到想要的 location
 
-## Replication And Sharding
+- Quad-tree 圖示
+
+    ![System%20Design%20Fundamentals%2061ac6ecd6c374463a13f5beb3e87bec9/Quad-tree.svg.png](System%20Design%20Fundamentals%2061ac6ecd6c374463a13f5beb3e87bec9/Quad-tree.svg.png)
+
+## 📌 Replication And Sharding
 
 - 示意圖
 
-### Replication
+    ![System%20Design%20Fundamentals%2061ac6ecd6c374463a13f5beb3e87bec9/Replication&Sharding.jpg](System%20Design%20Fundamentals%2061ac6ecd6c374463a13f5beb3e87bec9/Replication&Sharding.jpg)
 
-💡 **由多個 database 來備份資料提高 Redundancy 並降低 Latency**
+### 🔷 Replication
+
+💡  由多個 database 來備份資料提高 Redundancy 並降低 Latency
 
 ✳️  為什麼需要？
 
@@ -270,9 +347,9 @@ Quadtree = 一種有四個 node 的樹，要馬四個要馬沒有。
 - 同步（Sync）是指兩邊的資料庫要馬上同步，這個過程通常會比較久，因為兩邊都要寫入，且都要順利完成。基本上你不會想讓你兩邊的資料不同步
 - 而非同步（Async）的狀況，會用在不需要及時同步的資料上。比如說發的 post 要出現別人的塗鴉牆上，這種比較沒有緊急性的需求，就可以用 Replication 的 Async 方式來同步（假設在美國發文，且兩個資料庫每五分鐘同步一次，在美國的會馬上看到發文，在印度的會在同步後才看到）
 
-### **Shards**
+### 🔷 **Shards**
 
-💡 **切分 data（data partitioning）讓 database 不會過多備份相同資料，並增加更多 throughput**
+**💡**  切分 data（data partitioning）讓 database 不會過多備份相同資料，並增加更多 throughput
 
 ✳️  為什麼需要？
 
@@ -289,7 +366,7 @@ Quadtree = 一種有四個 node 的樹，要馬四個要馬沒有。
 - 以上面帳單資料為例，XYZ 開頭的 data 可能就會比較少被拜訪，其他的會被多次拜訪（Hot Spot），所以這個 strategy 不夠好。這樣其實就失去了當初用 shard 的意義（每次都拜訪同一個，那跟只有一個有什麼差）
 - 我們可以用 hashing 去做
 
-Hot Spot：當工作分配不均時，代表有某些 server 會被拜訪比較多次，稱為 Hot Spot。
+Hot Spot：當工作分配不均時，代表有某些 Server 會被拜訪比較多次，稱為 Hot Spot。
 （可能是因為 sharding key 或 hashing function 不理想 或 工作本來就 skewed）
 
 ✳️  實例
@@ -298,9 +375,9 @@ Hot Spot：當工作分配不均時，代表有某些 server 會被拜訪比較�
 - 通常會讓 Reverse Proxy 去處理要找哪個 Shard
 - 切不同地區、切不同種類的 data、切不同的 column（only for structured data）
 
-## Leader Election
+## 📌 Leader Election
 
-💡 **如何讓多台機器擁有共同的認知（share their states）**
+問題：如何讓多台機器擁有共同的認知（share their states）？
 
 ✳️  實例解說 
 
@@ -327,7 +404,7 @@ Hot Spot：當工作分配不均時，代表有某些 server 會被拜訪比較�
         - Implement The Raft consensus algorithm (這就是為什麼他們可以同時擁有兩個特質)
         - 我們自己用 Etcd 實作，就會讓 Servers 和 Etcd 溝通，從那邊得到 Leader，如此就是實作 Leader Election 了
 
-## Peer-To-Peer Networks
+## 📌 Peer-To-Peer Networks
 
 問題：如何一次傳送龐大的資料給很多機器？
 
@@ -337,6 +414,10 @@ Hot Spot：當工作分配不均時，代表有某些 server 會被拜訪比較�
 2. 增加 Server 來傳。但這樣會有很多相同的資料在這些機器上
 3. 將資料切成很多小份，傳給不同接收者，讓接收者們彼此溝通，最後拼湊出完整的資料 ✅
 - 圖示
+
+    ![System%20Design%20Fundamentals%2061ac6ecd6c374463a13f5beb3e87bec9/P2PNetwork.jpg](System%20Design%20Fundamentals%2061ac6ecd6c374463a13f5beb3e87bec9/P2PNetwork.jpg)
+
+    *備註：13，最後一輪的四個一，有三個傳給新的 peer，一個要接收 3。*
 
 ✳️  如何讓 peer 知道下一個要找溝通？
 
@@ -349,40 +430,40 @@ Hot Spot：當工作分配不均時，代表有某些 server 會被拜訪比較�
     - Distributed Hash Table (DHT)： 一堆 hash table 在 mapping
     - Kraken：一個由 Uber 開發出的 p2p 系統
 
-## Polling And Streaming
+## 📌 Polling And Streaming
 
 問題：如何 real-time 更新資料，像是監控溫度、訊息傳送...等等？
 
-### Polling
+### 🔷 Polling
 
-💡 **讓 Client 定時向 Server 發出 request 更新資料**
+💡  讓 Client 定時向 Server 發出 request 更新資料
 
 - 可是定時還是有延遲，一直縮減間隔會造成 Server 的負擔
 
-### Streaming
+### 🔷 Streaming
 
-💡 **透過 socket 讓兩台機器有一個 open connection，彼此不用再一直發 request**
+💡  透過 socket 讓兩台機器有一個 open connection，彼此不用再一直發 request
 
 - Server 從被動的角色，變成主動向 Client 傳送資料（pushing）
 
 根據狀況來判斷要用 Polling 還是 Streaming。若是不用即時更新可用 polling，若是需要即時更新可用 Streaming。
 
-## Configuration
+## 📌 Configuration
 
-### Static Configuration
+### 🔷 Static Configuration
 
 - 與程式碼綁定，所以若要改動需要更版（shipped with code）
 - 好處：在發布前會有嚴謹的 code review process、tests 去驗證跟檢查
 - 壞處：發佈時間久、不彈性
 
-### Dynamic Configuration
+### 🔷 Dynamic Configuration
 
 - 不與程式碼綁定，通常會需要一個 Database，Application 跟這個 Database 詢問 Configuration
 - 比較複雜，最好要有 review process、access control 來保證更動時不會有錯（review process 比 deploy 時間還長）
 - 好處：使用起來很彈性、很快，比如說可以用在 UI、一些設定...
 - 壞處：沒有流程會檢查這個，也沒有測試會跑
 
-## Rate Limiting
+## 📌 Rate Limiting
 
 限制一段時間內只能做多少事
 
@@ -397,17 +478,17 @@ Hot Spot：當工作分配不均時，代表有某些 server 會被拜訪比較�
 - Redis（Key-Value store Database），比如說在收到 request 時先去 Redis 檢查
 - Tier Based：可以同時有很多條件（0.5 秒一次＋10 秒內三次＋1 分鐘內十次）
 
-## Logging And Monitoring
+## 📌 Logging And Monitoring
 
 問題：如何處理一些初次碰到、難以複製的問題？
 
-### Logging
+### 🔷 Logging
 
 💡  把 logs（有用的資訊）存到 Database 裡面提供給開發者 debug
 
 - Stackdriver（Google）
 
-### Monitoring
+### 🔷 Monitoring
 
 💡  視覺化呈現系統的各種指標
 
@@ -418,15 +499,19 @@ Hot Spot：當工作分配不均時，代表有某些 server 會被拜訪比較�
     - Grafana
     - Pair with a Alerting System 會很不錯（出錯時會警告你）
 
-## Publish / Subscribe Pattern
+## 📌 Publish / Subscribe Pattern
 
  問題：如何 scale Streaming（像是股票資訊）
- 
- ### Publisher
+
+- 示意圖
+
+    ![System%20Design%20Fundamentals%2061ac6ecd6c374463a13f5beb3e87bec9/Publish_Subscribe_Pattern.jpg](System%20Design%20Fundamentals%2061ac6ecd6c374463a13f5beb3e87bec9/Publish_Subscribe_Pattern.jpg)
+
+### 🔷 Publisher
 
 - 發送訊息到 Topics
 
-### Topics
+### 🔷 Topics
 
 - 像是一個 Channel，一個中繼站
 - 讓 Subscriber 去 Subscribe，監聽是否有新資訊
@@ -437,7 +522,7 @@ Hot Spot：當工作分配不均時，代表有某些 server 會被拜訪比較�
 - FIFO
 - 有的可以 Replay / Rewind 那些進入 Topics 的資料
 
-### Subscriber
+### 🔷 Subscriber
 
 - Subscribe Topics，持續監聽
 - 收到資料後會傳 ACK (Acknowledgement) 給 Topics，讓 Topics 知道傳送成功，自己被 listen
