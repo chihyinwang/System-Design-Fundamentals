@@ -324,7 +324,7 @@ Quadtree = 一種有四個 node 的樹，要馬四個要馬沒有。
 
 - Quad-tree 圖示
 
-    ![System%20Design%20Fundamentals%2061ac6ecd6c374463a13f5beb3e87bec9/Quad-tree.svg.png](System%20Design%20Fundamentals%2061ac6ecd6c374463a13f5beb3e87bec9/Quad-tree.svg.png)
+    ![System%20Design%20Fundamentals%2061ac6ecd6c374463a13f5beb3e87bec9/Quad-tree.png](System%20Design%20Fundamentals%2061ac6ecd6c374463a13f5beb3e87bec9/Quad-tree.png)
 
 ## 📌 Replication And Sharding
 
